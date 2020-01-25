@@ -3,20 +3,40 @@ import TextInput from "./FormInputs/TextInput";
 import validator from "validator";
 
 const InputFormExample = props => {
-  const [initFormVal, setInitFormVal] = useState(false);
+  const [emailInputValid, setEmailInputValid] = useState(false);
+  const [secondaryEmailValid, setSecondaryEmailValid] = useState(true);
+
+  const [validateTriggerKey, setValidateTriggerKey] = useState(false);
+  const [formValidated, setFormValidated] = useState(false);
+  const [formIsValid, setFormIsValid] = useState(false);
+
   const formExampleOne = e => {
     e.preventDefault();
-    console.log("Form Submitted");
-    setInitFormVal(true);
+    if (formIsValid) {
+      console.log("Form valid");
+      console.log("Form Submitted");
+    } else if (!formValidated) {
+      // We know some input is invalid, trigger validation of elements to show error messages
+      setValidateTriggerKey(new Date().getTime());
+      setFormValidated(true);
+      console.log("Form invalid");
+    }
   };
+
+  useEffect(() => {
+    setFormIsValid(emailInputValid === true);
+  }, [emailInputValid]);
 
   return (
     <div>
       <h1>Input Form Example</h1>
       <form method="post" name="formExampleOne" onSubmit={formExampleOne}>
         <TextInput
+          placeholder="Enter email required"
           validateInputFunc={validator.isEmail}
-          validateField={initFormVal}
+          validateCallback={ret => setEmailInputValid(ret)}
+          validateTrigger={validateTriggerKey}
+          validateFailMessage="Not a valid email."
           className="test"
         />
         <input type="submit" className="button" value="Register" />

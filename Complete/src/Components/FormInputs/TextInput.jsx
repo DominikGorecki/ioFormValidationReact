@@ -1,39 +1,50 @@
 import React, { useEffect, useState, useMemo } from "react";
 
 const TextInput = props => {
-  const [inputValue, setInputValue] = useState(props.initValue);
+  const [inputValue, setInputValue] = useState(props.initValue || "");
   const [inputValid, setInputValid] = useState(true);
-
   // Don't validate on blur until first validate has began.
-  const validateBegan = false;
+  const [validateBegan, setValidateBegan] = useState(true);
 
   const className = props.className || "";
-
   const alwaysValid = value => true;
   const validateInputFunc = props.validateInputFunc || alwaysValid;
+  const emptyFunc = ret => {};
+  const validateCallback = props.validateCallback || emptyFunc,
+    validateFailMessage = props.validateFailMessage || "Invalid input";
 
   useEffect(() => {
-    if (props.validateField === true) {
-      debugger;
+    if (props.validateTrigger) {
+      console.log("Validation Trigger");
       validateInput();
     }
-  }, [props.validateField]); // Only re-run the effect if count changes
+  }, [props.validateTrigger]);
 
   const validateInput = () => {
-    console.log("Ran");
-    debugger;
-    setInputValid(validateInputFunc(inputValue));
+    console.log("Validation Ran");
+    if (validateInputFunc(inputValue)) {
+      setInputValid(true);
+      validateCallback(true);
+    } else {
+      setInputValid(false);
+      validateCallback(false);
+    }
   };
 
   return (
     <div>
       <input
         className={className}
-        onChange={e => setInputValue(e.target.value)}
+        onFocus={() => setValidateBegan(true)}
+        onChange={e => {
+          setInputValue(e.target.value);
+          validateInput();
+        }}
+        onBlur={() => validateInput()}
         type="text"
-        placeholder="Enter something"
+        placeholder={props.placeholder}
       />
-      <div>Valid: {inputValid ? "Valid" : "Not"}</div>
+      {!inputValid && <div>{validateFailMessage}</div>}
     </div>
   );
 };
