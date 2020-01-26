@@ -33,11 +33,15 @@ const InputFormExample = props => {
       <form method="post" name="formExampleOne" onSubmit={formExampleOne}>
         <TextInput
           placeholder="Enter email required"
+          label="Email:"
           validateInputFunc={validator.isEmail}
           validateCallback={ret => setEmailInputValid(ret)}
           validateTrigger={validateTriggerKey}
           validateFailMessage="Not a valid email."
-          className="test"
+          required={true}
+          containerClassName="container-class-name"
+          labelClassName="label-class-name"
+          errorClassName="error-class-name"
         />
         <input type="submit" className="button" value="Register" />
       </form>
