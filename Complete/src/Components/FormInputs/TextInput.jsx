@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 
 const TextInput = props => {
   const [inputValue, setInputValue] = useState(props.initValue || "");
@@ -21,6 +21,7 @@ const TextInput = props => {
 
   // Functions
   const validateCallback = props.validateCallback || emptyFunc,
+    validatedValueCallback = props.validatedValueCallback || emptyFunc,
     required = props.required === true ? true : false;
 
   const alwaysValid = value => true;
@@ -39,6 +40,7 @@ const TextInput = props => {
     if ((!required && !inputValue) || validateInputFunc(inputValue)) {
       setInputValid(true);
       validateCallback(true);
+      validatedValueCallback(inputValue);
       return true;
     } else {
       setInputValid(false);
@@ -77,6 +79,7 @@ const TextInput = props => {
           setInputValue(e.target.value);
           if (validateBegan) validateInput();
         }}
+        value={inputValue}
         onBlur={() => {
           validateInput();
         }}

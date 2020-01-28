@@ -4,6 +4,7 @@ import validator from "validator";
 
 const InputFormExample = props => {
   const [emailInputValid, setEmailInputValid] = useState(false);
+  const [emailInputValue, setEmailInputValue] = useState();
   const [secondaryEmailValid, setSecondaryEmailValid] = useState(true);
 
   const [validateTriggerKey, setValidateTriggerKey] = useState(false);
@@ -14,7 +15,7 @@ const InputFormExample = props => {
     e.preventDefault();
     if (formIsValid) {
       console.log("Form valid");
-      console.log("Form Submitted");
+      console.log(`Form Submitted: ${emailInputValue}`);
     } else if (!formValidated) {
       // We know some input is invalid, trigger validation of elements to show error messages
       setValidateTriggerKey(new Date().getTime());
@@ -34,8 +35,10 @@ const InputFormExample = props => {
         <TextInput
           placeholder="Enter email required"
           label="Email:"
+          initValue="Init value"
           validateInputFunc={validator.isEmail}
           validateCallback={ret => setEmailInputValid(ret)}
+          validatedValueCallback={val => setEmailInputValue(val)}
           validateTrigger={validateTriggerKey}
           validateFailMessage="Not a valid email."
           required={true}
