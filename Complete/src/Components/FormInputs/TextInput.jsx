@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 const TextInput = props => {
   const [inputValue, setInputValue] = useState(props.initValue || "");
-  const [inputValid, setInputValid] = useState(true);
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
   // Don't validate on blur until first validate has began.
   const [validateBegan, setValidateBegan] = useState(false);
 
@@ -38,12 +38,12 @@ const TextInput = props => {
     console.log("Validation Ran");
     setValidateBegan(true);
     if ((!required && !inputValue) || validateInputFunc(inputValue)) {
-      setInputValid(true);
+      setShowErrorMessage(false);
       validateCallback(true);
       validatedValueCallback(inputValue);
       return true;
     } else {
-      setInputValid(false);
+      setShowErrorMessage(true);
       validateCallback(false);
       return false;
     }
@@ -87,7 +87,7 @@ const TextInput = props => {
         type="text"
         placeholder={props.placeholder}
       />
-      {!inputValid && (
+      {showErrorMessage && (
         <div className={errorClassName}>{validateFailMessage}</div>
       )}
     </div>
